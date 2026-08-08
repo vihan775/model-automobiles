@@ -70,32 +70,52 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const btn = e.target.querySelector('button');
     btn.textContent = 'Logging In...';
     btn.disabled = true;
+    document.getElementById('login-error').style.display = 'none';
     
-    // Fetch user from Supabase
-    const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .or(`name.ilike.%${inputId}%,phone.eq.${inputId}`)
-        .eq('password', inputPass)
-        .single();
-    
-    btn.textContent = 'Log In';
-    btn.disabled = false;
-    
-    if (error || !data) {
+    try {
+        // Fetch all users matching the password, then check name/phone in JS
+        // This avoids PostgREST filter issues with special characters in names
+        const { data: users, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('password', inputPass);
+        
+        if (error) {
+            console.error('Supabase error:', error);
+            document.getElementById('login-error').style.display = 'block';
+            btn.textContent = 'Log In';
+            btn.disabled = false;
+            return;
+        }
+        
+        // Find matching user by name (case-insensitive) or phone number
+        const matchedUser = (users || []).find(u => 
+            u.name.toLowerCase() === inputId.toLowerCase() || u.phone === inputId
+        );
+        
+        btn.textContent = 'Log In';
+        btn.disabled = false;
+        
+        if (!matchedUser) {
+            document.getElementById('login-error').style.display = 'block';
+            return;
+        }
+        
+        currentUser = matchedUser;
+        
+        switch (currentUser.role) {
+            case 'Owner': switchScreen('owner-dashboard'); break;
+            case 'Manager': switchScreen('manager-dashboard'); break;
+            case 'Telecaller': switchScreen('telecaller-dashboard'); break;
+            case 'Salesman': switchScreen('salesman-dashboard'); break;
+            case 'Serviceman': switchScreen('serviceman-dashboard'); break;
+            case 'Finance': switchScreen('finance-dashboard'); break;
+        }
+    } catch (err) {
+        console.error('Login error:', err);
         document.getElementById('login-error').style.display = 'block';
-        return;
-    }
-    
-    currentUser = data;
-    
-    switch (currentUser.role) {
-        case 'Owner': switchScreen('owner-dashboard'); break;
-        case 'Manager': switchScreen('manager-dashboard'); break;
-        case 'Telecaller': switchScreen('telecaller-dashboard'); break;
-        case 'Salesman': switchScreen('salesman-dashboard'); break;
-        case 'Serviceman': switchScreen('serviceman-dashboard'); break;
-        case 'Finance': switchScreen('finance-dashboard'); break;
+        btn.textContent = 'Log In';
+        btn.disabled = false;
     }
 });
 
