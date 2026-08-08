@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Automobiles Employee Tracker</title>
+    
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app-container">
+        
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+        <!-- Slide-out Sidebar -->
+        <div id="sidebar" class="sidebar">
+            <button id="close-sidebar" class="close-btn">&times;</button>
+            <div class="sidebar-content">
+                <div class="sidebar-profile">
+                    <div class="profile-avatar">👤</div>
+                    <div class="profile-info">
+                        <h3>My Profile</h3>
+                        <p id="sidebar-user-name">Not Logged In</p>
+                        <small id="sidebar-user-role" style="color: var(--primary-red); font-weight: 600;"></small>
+                    </div>
+                </div>
+                <div class="sidebar-links">
+                    <a href="#" class="sidebar-item">📊 My Activities</a>
+                </div>
+                <div class="sidebar-footer">
+                    <div class="help-section">
+                        <h4>Help & Support</h4>
+                        <p>If urgent call:</p>
+                        <a href="tel:8830207498" class="phone-link">📞 8830207498</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="role-selection" class="screen active">
+            <div class="logo-container">
+                <h1 class="logo-text"><span class="logo-red">MODEL</span><br><span class="logo-black">AUTOMOBILES</span></h1>
+                <p class="logo-subtext">GONDIA</p>
+            </div>
+            <h2>System Login</h2>
+            <p>Select your profile to continue.</p>
+            <form id="login-form" style="max-width: 400px; margin: 0 auto;">
+                <div class="form-group">
+                    <label for="login-username">Name or Phone Number</label>
+                    <input type="text" id="login-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="login-password" required style="width: 100%; padding-right: 40px;">
+                        <span id="toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; user-select: none; font-size: 1.2rem;">👁️</span>
+                    </div>
+                </div>
+                <p id="login-error" style="color: var(--primary-red); font-weight: 600; display: none; margin-bottom: 15px;">Invalid credentials, please try again.</p>
+                <button type="submit" class="btn submit-btn">Log In</button>
+            </form>
+        </div>
+
+        <!-- OWNER DASHBOARD -->
+        <div id="owner-dashboard" class="screen">
+            <nav class="navbar">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="hamburger-btn">☰</button>
+                    <div class="nav-brand">Owner Panel</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">Log Out</button>
+            </nav>
+            <div class="content">
+                <h2>Manage Employees</h2>
+                <form id="manage-users-form">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <input type="text" id="new-user-name" placeholder="Employee Name" required style="flex: 1; padding: 10px;">
+                        <input type="tel" id="new-user-phone" placeholder="Phone Number" required style="flex: 1; padding: 10px;">
+                        <input type="password" id="new-user-password" placeholder="Password" required style="flex: 1; padding: 10px;">
+                        <select id="new-user-role" required style="padding: 10px;">
+                            <option value="">Select Role</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Telecaller">Telecaller</option>
+                            <option value="Salesman">Salesman</option>
+                            <option value="Serviceman">Serviceman</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Owner">Owner</option>
+                        </select>
+                        <button type="submit" class="btn primary-btn" style="width: 100%; margin-top: 5px;">Add User</button>
+                    </div>
+                </form>
+
+                <div class="table-container" style="margin-bottom: 40px; margin-top: 15px;">
+                    <table id="users-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body"></tbody>
+                    </table>
+                </div>
+
+                <h2>Master Data View</h2>
+                <div class="table-container">
+                    <table id="master-data-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="master-data-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- MANAGER DASHBOARD -->
+        <div id="manager-dashboard" class="screen">
+            <nav class="navbar">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="hamburger-btn">☰</button>
+                    <div class="nav-brand">Manager Planner</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">Log Out</button>
+            </nav>
+            <div class="content">
+                <h2>Assign Daily Tasks</h2>
+                <form id="assign-task-form">
+                    <div class="form-group">
+                        <label for="task-type">Task Type</label>
+                        <select id="task-type" required>
+                            <option value="">-- Select Type --</option>
+                            <option value="Sales">Sales (Village Visit)</option>
+                            <option value="Service">Service (Tractor Repair)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-assignee">Assign To</label>
+                        <select id="task-assignee" required>
+                            <!-- Populated based on task type -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-details">Details (Village / Customer Info)</label>
+                        <input type="text" id="task-details" placeholder="E.g. Visit Goregaon or Service Rahul's Tractor" required>
+                    </div>
+                    <button type="submit" class="btn submit-btn">Assign Task</button>
+                </form>
+
+                <h2 style="margin-top: 40px;">Active Tasks</h2>
+                <div class="table-container">
+                    <table id="active-tasks-table">
+                        <thead>
+                            <tr><th>Date</th><th>Assignee</th><th>Type</th><th>Details</th></tr>
+                        </thead>
+                        <tbody id="active-tasks-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TELECALLER DASHBOARD -->
+        <div id="telecaller-dashboard" class="screen">
+            <nav class="navbar">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="hamburger-btn">☰</button>
+                    <div class="nav-brand">Telecaller Dashboard</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">Log Out</button>
+            </nav>
+            <div class="content">
+                <h2>Log a Call</h2>
+                <form id="log-lead-form">
+                    <div class="form-group">
+                        <label for="lead-type">Call Segment</label>
+                        <select id="lead-type" required>
+                            <option value="Sales">Sales</option>
+                            <option value="Service">Service</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-customer">Customer Name</label>
+                        <input type="text" id="lead-customer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-mobile">Mobile Number</label>
+                        <input type="tel" id="lead-mobile" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-village">Village</label>
+                        <input type="text" id="lead-village" required>
+                    </div>
+                    <div class="form-group">
+                        <label id="lead-date-label" for="lead-date">Expected Buying Date</label>
+                        <input type="date" id="lead-date" required>
+                    </div>
+                    <button type="submit" class="btn submit-btn">Save Lead</button>
+                </form>
+
+                <h2 style="margin-top: 40px;">My Call History</h2>
+                <div class="table-container">
+                    <table id="telecaller-history-table">
+                        <thead>
+                            <tr><th>Date</th><th>Segment</th><th>Customer</th><th>Mobile</th><th>Village</th><th>Expected Date</th><th>Reminder To Call</th></tr>
+                        </thead>
+                        <tbody id="telecaller-history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SALESMAN DASHBOARD -->
+        <div id="salesman-dashboard" class="screen">
+            <nav class="navbar">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="hamburger-btn">☰</button>
+                    <div class="nav-brand">Salesman View</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">Log Out</button>
+            </nav>
+            <div class="content">
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <h3>My Tasks Today</h3>
+                        <div id="salesman-tasks-list" style="text-align:left; font-size: 0.9rem; margin-top: 10px;"></div>
+                    </div>
+                    <div class="stat-card highlight">
+                        <h3>Interested Sales Leads</h3>
+                        <div id="salesman-leads-list" style="text-align:left; font-size: 0.9rem; margin-top: 10px;"></div>
+                    </div>
+                </div>
+
+                <h2>Log My Visit</h2>
+                <form id="salesman-visit-form">
+                    <div class="form-group">
+                        <label for="visit-village">Village</label>
+                        <input type="text" id="visit-village" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="visit-customer">Customer Name</label>
+                        <input type="text" id="visit-customer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="visit-mobile">Customer Mobile</label>
+                        <input type="tel" id="visit-mobile" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Did you convince them?</label>
+                        <select id="visit-convinced" required>
+                            <option value="">-- Select --</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Not Interested">Not Interested</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="visit-photo">Photo Proof (Optional)</label>
+                        <input type="file" id="visit-photo" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn submit-btn">Submit Report</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SERVICEMAN DASHBOARD -->
+        <div id="serviceman-dashboard" class="screen">
+            <nav class="navbar">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="hamburger-btn">☰</button>
+                    <div class="nav-brand">Serviceman View</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">Log Out</button>
+            </nav>
+            <div class="content">
+                 <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <h3>My Service Tasks</h3>
+                        <div id="serviceman-tasks-list" style="text-align:left; font-size: 0.9rem; margin-top: 10px;"></div>
+                    </div>
+                    <div class="stat-card highlight">
+                        <h3>Service Leads (From Telecallers)</h3>
+                        <div id="serviceman-leads-list" style="text-align:left; font-size: 0.9rem; margin-top: 10px;"></div>
+                    </div>
+                </div>
+                <div style="text-align: center; color: var(--text-light); margin-top: 40px;">
+                    <p>Review your tasks and leads above to know who to approach today.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FINANCE DASHBOARD -->
+        <div id="finance-dashboard" class="screen">
+            <nav class="navbar">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="hamburger-btn">☰</button>
+                    <div class="nav-brand">Finance Department</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">Log Out</button>
+            </nav>
+            <div class="content">
+                <h2>New Finance Record</h2>
+                <form id="finance-entry-form">
+                    <div class="form-group">
+                        <label for="fin-name">Financer Name</label>
+                        <select id="fin-name" required>
+                            <option value="">-- Select --</option>
+                            <option value="Mahindra">Mahindra</option>
+                            <option value="Sundaram">Sundaram</option>
+                            <option value="Chola">Chola</option>
+                            <option value="Indus">Indus</option>
+                            <option value="Shriram">Shriram</option>
+                            <option value="Kotak">Kotak</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fin-amount">Finance Amount</label>
+                        <input type="number" id="fin-amount" placeholder="e.g. 410000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fin-reg-yn">Registration Y/N</label>
+                        <select id="fin-reg-yn" required>
+                            <option value="">-- Select --</option>
+                            <option value="Y">Yes (Y)</option>
+                            <option value="N">No (N)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fin-date">Date of Registration</label>
+                        <input type="date" id="fin-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fin-reg-no">Registration Number Plate</label>
+                        <input type="text" id="fin-reg-no" placeholder="e.g. MH-35-AB-1234 (Or 'N')">
+                    </div>
+                    <div class="form-group">
+                        <label for="fin-type">Fresh/Exchange</label>
+                        <select id="fin-type" required>
+                            <option value="">-- Select --</option>
+                            <option value="Fresh">Fresh (Y)</option>
+                            <option value="Exchange">Exchange (N)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn submit-btn">Save Record</button>
+                </form>
+
+                <h2 style="margin-top: 40px;">Finance Records</h2>
+                <div class="filters-container" style="justify-content: flex-start;">
+                    <div class="filter-group" style="flex: 2;">
+                        <label for="fin-search">Search by Registration Number</label>
+                        <input type="text" id="fin-search" placeholder="Enter Registration No..." style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); width: 100%;">
+                    </div>
+                    <div class="filter-group" style="justify-content: flex-end;">
+                        <button id="btn-search-finance" class="btn secondary-btn" style="padding: 10px 15px;">Search</button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="finance-table">
+                        <thead>
+                            <tr>
+                                <th>Financer</th>
+                                <th>Amount</th>
+                                <th>Reg Y/N</th>
+                                <th>Date</th>
+                                <th>Reg No</th>
+                                <th>Type</th>
+                                <th>Last Edited</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="finance-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Edit Modal (For Owner) -->
+    <div id="edit-modal" class="sidebar-overlay" style="display: none; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 20px; border-radius: 12px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;">
+            <h3>Edit Entry (Raw JSON)</h3>
+            <textarea id="edit-data-textarea" rows="6" style="width: 100%; margin-top: 10px; padding: 10px; font-family: monospace;"></textarea>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button id="save-edit-btn" class="btn primary-btn" style="flex:1;">Save</button>
+                <button id="cancel-edit-btn" class="btn secondary-btn" style="flex:1;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Finance Edit Modal -->
+    <div id="finance-edit-modal" class="sidebar-overlay" style="display: none; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;">
+            <h3>Edit Finance Record</h3>
+            <form id="finance-edit-form">
+                <input type="hidden" id="edit-fin-id">
+                <div class="form-group">
+                    <label>Financer Name</label>
+                    <select id="edit-fin-name" required>
+                        <option value="Mahindra">Mahindra</option>
+                        <option value="Sundaram">Sundaram</option>
+                        <option value="Chola">Chola</option>
+                        <option value="Indus">Indus</option>
+                        <option value="Shriram">Shriram</option>
+                        <option value="Kotak">Kotak</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Finance Amount</label>
+                    <input type="number" id="edit-fin-amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Registration Y/N</label>
+                    <select id="edit-fin-reg-yn" required>
+                        <option value="Y">Yes (Y)</option>
+                        <option value="N">No (N)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date of Registration</label>
+                    <input type="date" id="edit-fin-date" required>
+                </div>
+                <div class="form-group">
+                    <label>Registration Number Plate</label>
+                    <input type="text" id="edit-fin-reg-no">
+                </div>
+                <div class="form-group">
+                    <label>Fresh/Exchange</label>
+                    <select id="edit-fin-type" required>
+                        <option value="Fresh">Fresh (Y)</option>
+                        <option value="Exchange">Exchange (N)</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button type="submit" class="btn primary-btn" style="flex:1;">Save Updates</button>
+                    <button type="button" id="cancel-finance-edit-btn" class="btn secondary-btn" style="flex:1;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Edit Modal -->
+    <div id="user-edit-modal" class="sidebar-overlay" style="display: none; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 30px; border-radius: 12px; max-width: 400px; width: 100%;">
+            <h3>Edit Employee</h3>
+            <form id="user-edit-form">
+                <input type="hidden" id="edit-user-id">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="edit-user-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="edit-user-phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="text" id="edit-user-password" required>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="edit-user-role" required>
+                        <option value="Manager">Manager</option>
+                        <option value="Telecaller">Telecaller</option>
+                        <option value="Salesman">Salesman</option>
+                        <option value="Serviceman">Serviceman</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Owner">Owner</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button type="submit" class="btn primary-btn" style="flex:1;">Save Updates</button>
+                    <button type="button" id="cancel-user-edit-btn" class="btn secondary-btn" style="flex:1;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
