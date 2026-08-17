@@ -418,29 +418,29 @@
                     <!-- Add Order Form -->
                     <div class="stat-card" style="text-align: left;">
                         <h3 style="color: var(--primary-red); margin-bottom: 15px;">Add New Order</h3>
-                        <form id="spare-order-form" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <input type="number" id="spare-order-amount" placeholder="Amount Ordered (₹)" required style="flex: 1; min-width: 200px; padding: 10px;">
-                            <button type="submit" class="btn primary-btn" style="padding: 10px 20px;">Log Order</button>
+                        <form id="spare-order-form" style="display: flex; flex-direction: column; gap: 15px;">
+                            <input type="number" id="spare-order-amount" placeholder="Amount Ordered (₹)" required style="width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <button type="submit" class="btn primary-btn" style="padding: 12px; width: 100%;">Log Order</button>
                         </form>
                     </div>
 
                     <!-- Add Countersale Form -->
                     <div class="stat-card" style="text-align: left;">
                         <h3 style="color: var(--primary-red); margin-bottom: 15px;">Log Countersale</h3>
-                        <form id="spare-countersale-form" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                            <input type="number" id="spare-cs-amount" placeholder="Sale Amount (₹)" required style="flex: 1; min-width: 150px; padding: 10px;">
-                            <input type="date" id="spare-cs-date" required style="flex: 1; min-width: 150px; padding: 10px;">
-                            <button type="submit" class="btn primary-btn" style="padding: 10px 20px;">Save Sale</button>
+                        <form id="spare-countersale-form" style="display: flex; flex-direction: column; gap: 15px;">
+                            <input type="number" id="spare-cs-amount" placeholder="Sale Amount (₹)" required style="width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <input type="date" id="spare-cs-date" required style="width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <button type="submit" class="btn primary-btn" style="padding: 12px; width: 100%;">Save Sale</button>
                         </form>
                     </div>
 
                     <!-- Sent to Branch Form -->
                     <div class="stat-card" style="text-align: left;">
                         <h3 style="color: var(--primary-red); margin-bottom: 15px;">Branch Transfer & Billing</h3>
-                        <form id="spare-transfer-form" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <input type="number" id="spare-transfer-sent" placeholder="Amount of Parts Sent (₹)" required style="flex: 1; min-width: 200px; padding: 10px;">
-                            <input type="number" id="spare-transfer-billed" placeholder="Total Month Bill (₹)" required style="flex: 1; min-width: 200px; padding: 10px;">
-                            <button type="submit" class="btn primary-btn" style="padding: 10px 20px; min-width: 150px;">Record Transfer</button>
+                        <form id="spare-transfer-form" style="display: flex; flex-direction: column; gap: 15px;">
+                            <input type="number" id="spare-transfer-sent" placeholder="Amount of Parts Sent (₹)" required style="width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <input type="number" id="spare-transfer-billed" placeholder="Total Month Bill (₹)" required style="width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <button type="submit" class="btn primary-btn" style="padding: 12px; width: 100%;">Record Transfer</button>
                         </form>
                     </div>
                 </div>
@@ -564,6 +564,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=7"></script>
+    <script src="app.js?v=8"></script>
 </body>
 </html>
