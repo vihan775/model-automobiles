@@ -109,7 +109,8 @@ function switchOwnerTab(tabId) {
         'owner-finance-records-tab',
         'owner-salesman-data-tab',
         'owner-spare-logs-tab',
-        'owner-master-accounts-tab'
+        'owner-master-accounts-tab',
+        'owner-home-tab'
     ];
     tabs.forEach(t => {
         const el = document.getElementById(t);
@@ -117,6 +118,13 @@ function switchOwnerTab(tabId) {
     });
     const selected = document.getElementById(tabId);
     if (selected) selected.style.display = 'block';
+    
+    if (tabId === 'owner-home-tab') {
+        document.body.classList.add('showroom-active');
+    } else {
+        document.body.classList.remove('showroom-active');
+    }
+    
     toggleSidebar(false);
 }
 
@@ -270,6 +278,7 @@ function logout() {
     currentUser = null;
     localStorage.removeItem('modelAutoUser');
     localStorage.removeItem('modelAutoPass');
+    document.body.classList.remove('showroom-active');
     switchScreen('role-selection');
     initLogin();
 }
