@@ -126,6 +126,7 @@ function populateSidebar() {
     
     if (currentUser.role === 'Owner') {
         container.innerHTML = `
+            <a href="#" class="sidebar-item" onclick="switchOwnerTab('owner-home-tab')">🏠 Home Showroom</a>
             <a href="#" class="sidebar-item" onclick="switchOwnerTab('owner-manage-employees-tab')">👥 Manage Employees</a>
             <a href="#" class="sidebar-item" onclick="switchOwnerTab('owner-finance-records-tab')">💰 Finance Records</a>
             <a href="#" class="sidebar-item" onclick="switchOwnerTab('owner-salesman-data-tab')">📈 Salesman Data</a>
@@ -250,7 +251,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
         
         if (currentUser.role === 'Owner') {
             switchScreen('owner-dashboard');
-            switchOwnerTab('owner-manage-employees-tab');
+            switchOwnerTab('owner-home-tab');
         }
         else if (currentUser.role === 'Manager') switchScreen('manager-dashboard');
         else if (currentUser.role === 'Telecaller') switchScreen('telecaller-dashboard');
@@ -291,7 +292,55 @@ document.getElementById('manage-users-form').addEventListener('submit', async fu
     await renderOwnerDashboard();
 });
 
+const tractorModels = [
+    { name: "SWARAJ 733 FE 4WD", hp: "35 HP", cc: "2734 cc", cyl: "3", rpm: "2400 REV/MIN.", lift: "1300 kg", weight: "1340 kg" },
+    { name: "SWARAJ 843 XT 4WD", hp: "45 HP", cc: "2730 cc", cyl: "4", rpm: "2100 RPM", lift: "1700 kgf", weight: "2260 kg" },
+    { name: "SWARAJ 735 XT 4WD", hp: "45 HP", cc: "3307 cc", cyl: "3", rpm: "2000 RPM", lift: "1500 kgf", weight: "1905 kg" },
+    { name: "SWARAJ 744 FE 4WD", hp: "50 HP", cc: "3307 cc", cyl: "3", rpm: "2000 RPM", lift: "1700 kgf", weight: "2060 kg" },
+    { name: "SWARAJ 744 XT 4WD", hp: "52 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "1700 kgf", weight: "2345 kg" },
+    { name: "SWARAJ 843 XM 4WD", hp: "45 HP", cc: "3307 cc", cyl: "4", rpm: "1900 REV/Min.", lift: "1500 kg", weight: "2286 kg" },
+    { name: "SWARAJ 855 FE 4WD", hp: "55 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "2000 kgf", weight: "2455 kg" },
+    { name: "SWARAJ 742 XT 4WD", hp: "45 HP", cc: "3307 cc", cyl: "3", rpm: "2000 REV/Min.", lift: "1700 kgf", weight: "2053 kg" }
+];
+
+function renderTractors() {
+    const grid = document.getElementById('tractor-grid');
+    if(!grid) return;
+    grid.innerHTML = '';
+    
+    tractorModels.forEach((tractor, index) => {
+        const card = document.createElement('div');
+        card.className = 'tractor-card';
+        card.innerHTML = `
+            <h3>${tractor.name}</h3>
+            <p>${tractor.hp} Category</p>
+        `;
+        card.onclick = () => openTractorModal(index);
+        grid.appendChild(card);
+    });
+}
+
+function openTractorModal(index) {
+    const tractor = tractorModels[index];
+    document.getElementById('modal-tractor-name').textContent = tractor.name;
+    document.getElementById('modal-hp').textContent = tractor.hp;
+    document.getElementById('modal-cc').textContent = tractor.cc;
+    document.getElementById('modal-cylinders').textContent = tractor.cyl;
+    document.getElementById('modal-rpm').textContent = tractor.rpm;
+    document.getElementById('modal-lifting').textContent = tractor.lift;
+    document.getElementById('modal-weight').textContent = tractor.weight;
+    
+    document.getElementById('tractor-modal').style.display = 'flex';
+    document.getElementById('tractor-modal').classList.add('active');
+}
+
+function closeTractorModal() {
+    document.getElementById('tractor-modal').style.display = 'none';
+    document.getElementById('tractor-modal').classList.remove('active');
+}
+
 async function renderOwnerDashboard() {
+    renderTractors();
     var result = await db.from('users').select('*').order('created_at', { ascending: true });
     var users = result.data || [];
     
