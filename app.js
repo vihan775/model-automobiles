@@ -293,14 +293,14 @@ document.getElementById('manage-users-form').addEventListener('submit', async fu
 });
 
 const tractorModels = [
-    { name: "SWARAJ 733 FE 4WD", hp: "35 HP", cc: "2734 cc", cyl: "3", rpm: "2400 REV/MIN.", lift: "1300 kg", weight: "1340 kg" },
-    { name: "SWARAJ 843 XT 4WD", hp: "45 HP", cc: "2730 cc", cyl: "4", rpm: "2100 RPM", lift: "1700 kgf", weight: "2260 kg" },
-    { name: "SWARAJ 735 XT 4WD", hp: "45 HP", cc: "3307 cc", cyl: "3", rpm: "2000 RPM", lift: "1500 kgf", weight: "1905 kg" },
-    { name: "SWARAJ 744 FE 4WD", hp: "50 HP", cc: "3307 cc", cyl: "3", rpm: "2000 RPM", lift: "1700 kgf", weight: "2060 kg" },
-    { name: "SWARAJ 744 XT 4WD", hp: "52 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "1700 kgf", weight: "2345 kg" },
-    { name: "SWARAJ 843 XM 4WD", hp: "45 HP", cc: "3307 cc", cyl: "4", rpm: "1900 REV/Min.", lift: "1500 kg", weight: "2286 kg" },
-    { name: "SWARAJ 855 FE 4WD", hp: "55 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "2000 kgf", weight: "2455 kg" },
-    { name: "SWARAJ 742 XT 4WD", hp: "45 HP", cc: "3307 cc", cyl: "3", rpm: "2000 REV/Min.", lift: "1700 kgf", weight: "2053 kg" }
+    { name: "SWARAJ 733 FE 4WD", hp: "35 HP", cc: "2734 cc", cyl: "3", rpm: "2400 REV/MIN.", lift: "1300 kg", weight: "1340 kg", img: "images/tractors/tractor1.png" },
+    { name: "SWARAJ 843 XT 4WD", hp: "45 HP", cc: "2730 cc", cyl: "4", rpm: "2100 RPM", lift: "1700 kgf", weight: "2260 kg", img: "images/tractors/tractor2.png" },
+    { name: "SWARAJ 735 XT 4WD", hp: "45 HP", cc: "3307 cc", cyl: "3", rpm: "2000 RPM", lift: "1500 kgf", weight: "1905 kg", img: "images/tractors/tractor3.png" },
+    { name: "SWARAJ 744 FE 4WD", hp: "50 HP", cc: "3307 cc", cyl: "3", rpm: "2000 RPM", lift: "1700 kgf", weight: "2060 kg", img: "images/tractors/tractor4.png" },
+    { name: "SWARAJ 744 XT 4WD", hp: "52 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "1700 kgf", weight: "2345 kg", img: "images/tractors/tractor5.png" },
+    { name: "SWARAJ 843 XM 4WD", hp: "45 HP", cc: "3307 cc", cyl: "4", rpm: "1900 REV/Min.", lift: "1500 kg", weight: "2286 kg", img: "images/tractors/tractor1.png" },
+    { name: "SWARAJ 855 FE 4WD", hp: "55 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "2000 kgf", weight: "2455 kg", img: "images/tractors/tractor2.png" },
+    { name: "SWARAJ 742 XT 4WD", hp: "45 HP", cc: "3307 cc", cyl: "3", rpm: "2000 REV/Min.", lift: "1700 kgf", weight: "2053 kg", img: "images/tractors/tractor3.png" }
 ];
 
 function renderTractors() {
@@ -308,20 +308,33 @@ function renderTractors() {
     if(!grid) return;
     grid.innerHTML = '';
     
-    tractorModels.forEach((tractor, index) => {
+    // Sort by HP descending
+    const sortedTractors = [...tractorModels].sort((a, b) => {
+        const hpA = parseInt(a.hp);
+        const hpB = parseInt(b.hp);
+        return hpB - hpA;
+    });
+    
+    grid.className = 'tractor-zigzag';
+    
+    sortedTractors.forEach((tractor, index) => {
         const card = document.createElement('div');
-        card.className = 'tractor-card';
+        card.className = index % 2 === 0 ? 'tractor-card zigzag-left' : 'tractor-card zigzag-right';
         card.innerHTML = `
-            <h3>${tractor.name}</h3>
-            <p>${tractor.hp} Category</p>
+            <div class="tractor-img-container">
+                <img src="${tractor.img}" alt="${tractor.name}" class="tractor-img">
+            </div>
+            <div class="tractor-info">
+                <h3>${tractor.name}</h3>
+                <p style="color:var(--primary-red); font-weight:700;">${tractor.hp} Category</p>
+            </div>
         `;
-        card.onclick = () => openTractorModal(index);
+        card.onclick = () => openTractorModalByData(tractor);
         grid.appendChild(card);
     });
 }
 
-function openTractorModal(index) {
-    const tractor = tractorModels[index];
+function openTractorModalByData(tractor) {
     document.getElementById('modal-tractor-name').textContent = tractor.name;
     document.getElementById('modal-hp').textContent = tractor.hp;
     document.getElementById('modal-cc').textContent = tractor.cc;
@@ -332,6 +345,11 @@ function openTractorModal(index) {
     
     document.getElementById('tractor-modal').style.display = 'flex';
     document.getElementById('tractor-modal').classList.add('active');
+}
+
+// Support older function signature if still called anywhere
+function openTractorModal(index) {
+    openTractorModalByData(tractorModels[index]);
 }
 
 function closeTractorModal() {
