@@ -11,9 +11,23 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,hi,mr',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
+    <div id="google_translate_element"></div>
     <div id="app-container">
         
         <!-- Sidebar Overlay -->
@@ -40,13 +54,21 @@
                         <p>If urgent call:</p>
                         <a href="tel:8830207498" class="phone-link">📞 8830207498</a>
                     </div>
+                    <div class="settings-group">
+                        <button id="theme-toggle" class="theme-toggle-btn">🌙 Dark Mode</button>
+                        <select id="language-dropdown" class="language-select">
+                            <option value="en">English (English)</option>
+                            <option value="hi">Hindi (हिन्दी)</option>
+                            <option value="mr">Marathi (मराठी)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Login Screen -->
         <div id="role-selection" class="screen active">
-            <div class="logo-container">
+            <div class="logo-container notranslate">
                 <h1 class="logo-text"><span class="logo-red">MODEL</span><br><span class="logo-black">AUTOMOBILES</span></h1>
                 <p class="logo-subtext">GONDIA</p>
             </div>
