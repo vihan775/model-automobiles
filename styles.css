@@ -10,7 +10,35 @@
     --glass-border: rgba(255, 255, 255, 0.18);
     --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
     --border-radius: 12px;
+    --input-bg: #ffffff;
+    --card-bg: #ffffff;
+    --grad-1: #fdfbfb;
+    --grad-2: #ebedee;
+    --table-header: #f8f9fa;
+    --table-border: #eee;
+    --table-hover: #f9f9f9;
 }
+
+body.dark-mode {
+    --primary-red: #E3000F;
+    --primary-red-hover: #ff3344;
+    --white: #1e1e1e;
+    --bg-color: #121212;
+    --text-dark: #e0e0e0;
+    --text-light: #a0a0a0;
+    --border-color: #333333;
+    --glass-bg: rgba(30, 30, 30, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    --input-bg: #2a2a2a;
+    --card-bg: #1e1e1e;
+    --grad-1: #121212;
+    --grad-2: #1a1a1a;
+    --table-header: #2a2a2a;
+    --table-border: #333333;
+    --table-hover: #252525;
+}
+
 
 * {
     box-sizing: border-box;
@@ -25,7 +53,7 @@ body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    background: linear-gradient(135deg, var(--grad-1) 0%, var(--grad-2) 100%);
 }
 
 #app-container {
@@ -80,13 +108,13 @@ body {
 }
 
 .logo-red { color: var(--primary-red); }
-.logo-black { color: #111; font-size: 2.2rem;}
+.logo-black { color: var(--text-dark); font-size: 2.2rem;}
 
 .logo-subtext {
     font-size: 1.2rem;
     font-weight: 600;
     letter-spacing: 4px;
-    color: #333;
+    color: var(--text-dark);
     margin-top: 5px;
     text-transform: uppercase;
 }
@@ -253,7 +281,7 @@ form {
     border-radius: 8px;
     font-size: 1rem;
     transition: all 0.3s ease;
-    background-color: var(--white);
+    background-color: var(--input-bg);
     color: var(--text-dark);
 }
 
@@ -287,7 +315,7 @@ form {
 .stat-card {
     flex: 1;
     min-width: 200px;
-    background: var(--white);
+    background: var(--card-bg);
     padding: 25px;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -333,8 +361,59 @@ form {
     min-width: 150px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
+
+/* Global Settings Controls */
+.settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 20px;
+}
+
+.theme-toggle-btn {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-dark);
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--table-hover);
+}
+
+.language-select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--input-bg);
+    color: var(--text-dark);
+    cursor: pointer;
+}
+
+/* Hide the default Google Translate widget */
+.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+} 
+body {
+    top: 0px !important; 
+}
+#google_translate_element {
+    display: none;
+}
+
 
 .filter-group label {
     font-size: 0.85rem;
@@ -348,11 +427,12 @@ form {
     border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 0.95rem;
-    background-color: var(--white);
+    background-color: var(--input-bg);
+    color: var(--text-dark);
 }
 
 .table-container {
-    background: var(--white);
+    background: var(--card-bg);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     overflow-x: auto;
@@ -371,7 +451,7 @@ th, td {
 }
 
 th {
-    background-color: #f8f9fa;
+    background-color: var(--table-header);
     font-weight: 600;
     color: var(--text-dark);
     font-size: 0.9rem;
@@ -380,7 +460,7 @@ th {
 }
 
 tbody tr:hover {
-    background-color: #fcfcfc;
+    background-color: var(--table-hover);
 }
 
 tbody tr:last-child td {
@@ -413,7 +493,7 @@ tbody tr:last-child td {
     left: -320px; /* Hidden by default */
     width: 300px;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.6);
+    background: var(--glass-bg);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-right: 1px solid rgba(255, 255, 255, 0.3);
