@@ -8,6 +8,28 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // State
 let currentUser = null;
 
+function formatDateDDMMYYYY(dateInput) {
+    if (!dateInput) return '';
+    var d = new Date(dateInput);
+    if (isNaN(d.getTime())) {
+        if (typeof dateInput === 'string' && dateInput.includes('-')) {
+            var parts = dateInput.split('-');
+            if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+        }
+        return String(dateInput);
+    }
+    var day = d.getDate().toString().padStart(2, '0');
+    var month = (d.getMonth() + 1).toString().padStart(2, '0');
+    var year = d.getFullYear();
+    var hours = d.getHours();
+    var minutes = d.getMinutes().toString().padStart(2, '0');
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; 
+    var strTime = hours.toString().padStart(2, '0') + ':' + minutes + ' ' + ampm;
+    return day + '/' + month + '/' + year + ' ' + strTime;
+}
+
 // --- Sidebar Logic ---
 const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
@@ -219,13 +241,14 @@ async function renderOwnerDashboard() {
         }
         for (var i = 0; i < sCountersales.length; i++) {
             var c = sCountersales[i];
-            spareHtml += '<tr><td>Countersale</td><td>' + c.created_by_name + '</td><td>Amount: \u20B9' + c.amount + ' (Sale Date: ' + c.sale_date + ')</td><td>' + new Date(c.created_at).toLocaleString() + '</td></tr>';
+            var displayDate = c.sale_date.includes('-') ? c.sale_date.split('-').reverse().join('/') : c.sale_date;
+            spareHtml += '<tr><td>Countersale</td><td>' + c.created_by_name + '</td><td>Amount: \u20B9' + c.amount + ' (Sale Date: ' + displayDate + ')</td><td>' + formatDateDDMMYYYY(c.created_at) + '</td></tr>';
         }
         for (var i = 0; i < sTransfers.length; i++) {
             var t = sTransfers[i];
             var bName = t.branch_name || 'Unknown';
             var diffColor = t.difference < 0 ? 'var(--primary-red)' : 'green';
-            spareHtml += '<tr><td>Branch Transfer (' + bName + ')</td><td>' + t.created_by_name + '</td><td>Parts Sent: \u20B9' + t.amount_sent + ' | Bill: \u20B9' + t.month_bill_amount + ' | <strong style="color: ' + diffColor + '">Diff: \u20B9' + t.difference + '</strong></td><td>' + new Date(t.created_at).toLocaleString() + '</td></tr>';
+            spareHtml += '<tr><td>Branch Transfer (' + bName + ')</td><td>' + t.created_by_name + '</td><td>Parts Sent: \u20B9' + t.amount_sent + ' | Bill: \u20B9' + t.month_bill_amount + ' | <strong style="color: ' + diffColor + '">Diff: \u20B9' + t.difference + '</strong></td><td>' + formatDateDDMMYYYY(t.created_at) + '</td></tr>';
         }
         sBody.innerHTML = spareHtml;
     }
@@ -540,7 +563,7 @@ async function openFinanceEdit(id) {
 document.getElementById('finance-edit-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    var timestamp = new Date().toLocaleString();
+    var timestamp = formatDateDDMMYYYY(new Date());
     var btn = e.target.querySelector('button[type="submit"]');
     btn.disabled = true; btn.textContent = 'Saving...';
     
@@ -583,7 +606,7 @@ if (document.getElementById('spare-order-form')) {
             amount_ordered: amount,
             created_by_id: currentUser.id,
             created_by_name: currentUser.name,
-            timestamp: new Date().toLocaleString()
+            timestamp: formatDateDDMMYYYY(new Date())
         }]);
         e.target.reset();
         await renderSpareInchargeDashboard();
@@ -638,7 +661,8 @@ async function renderSpareInchargeDashboard() {
         allLogs.push({ type: 'Order', details: 'Amount: \u20B9' + orders[i].amount_ordered, date: new Date(orders[i].created_at) });
     }
     for (var i = 0; i < countersales.length; i++) {
-        allLogs.push({ type: 'Countersale', details: 'Amount: \u20B9' + countersales[i].amount + ' (Sale Date: ' + countersales[i].sale_date + ')', date: new Date(countersales[i].created_at) });
+        var displayDate = countersales[i].sale_date.includes('-') ? countersales[i].sale_date.split('-').reverse().join('/') : countersales[i].sale_date;
+        allLogs.push({ type: 'Countersale', details: 'Amount: \u20B9' + countersales[i].amount + ' (Sale Date: ' + displayDate + ')', date: new Date(countersales[i].created_at) });
     }
     for (var i = 0; i < transfers.length; i++) {
         var diffColor = transfers[i].difference < 0 ? 'var(--primary-red)' : 'green';
@@ -651,7 +675,7 @@ async function renderSpareInchargeDashboard() {
     
     var html = '';
     for (var i = 0; i < allLogs.length; i++) {
-        html += '<tr><td>' + allLogs[i].type + '</td><td>' + allLogs[i].details + '</td><td>' + allLogs[i].date.toLocaleString() + '</td></tr>';
+        html += '<tr><td>' + allLogs[i].type + '</td><td>' + allLogs[i].details + '</td><td>' + formatDateDDMMYYYY(allLogs[i].date) + '</td></tr>';
     }
     
     document.getElementById('spare-history-body').innerHTML = html;
@@ -659,4 +683,4 @@ async function renderSpareInchargeDashboard() {
 
 // Init
 initLogin();
-// Force Vercel deployment (v9)
+// Force Vercel deployment (v10)
