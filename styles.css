@@ -433,29 +433,86 @@ body {
     display: none;
 }
 
-/* Tractor Showroom */
-.tractor-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
+/* Tractor Showroom Background */
+.showroom-container {
+    background-image: url('images/farm_bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    padding: 40px;
+    border-radius: var(--border-radius);
+    min-height: 100vh;
 }
 
-.tractor-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
+/* Tractor Zigzag Layout */
+.tractor-zigzag {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 30px;
+    position: relative;
+    padding-bottom: 50px;
+}
+
+/* Optional timeline line down the middle */
+.tractor-zigzag::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.tractor-card.zigzag-left,
+.tractor-card.zigzag-right {
+    width: 45%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    position: relative;
     padding: 20px;
+    border-radius: 16px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.tractor-card.zigzag-left {
+    align-self: flex-start;
+}
+
+.tractor-card.zigzag-right {
+    align-self: flex-end;
+}
+
+.tractor-img-container {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    background: rgba(255,255,255,0.7); /* Light background to make tractors pop */
+    padding: 10px;
+}
+
+.tractor-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    max-height: 200px;
+    transition: transform 0.4s ease;
+}
+
+.tractor-card:hover .tractor-img {
+    transform: scale(1.1);
 }
 
 .tractor-card:hover {
-    transform: translateY(-5px);
     border-color: var(--primary-red);
-    box-shadow: 0 8px 25px rgba(227, 0, 15, 0.15);
+    box-shadow: 0 8px 25px rgba(227, 0, 15, 0.3);
 }
 
 .tractor-card h3 {
@@ -464,11 +521,39 @@ body {
     font-size: 1.2rem;
 }
 
-.tractor-card p {
-    color: var(--text-light);
-    font-size: 0.9rem;
-    font-weight: 600;
+/* Connectors to timeline */
+.tractor-card.zigzag-left::after {
+    content: '';
+    position: absolute;
+    right: -11%;
+    top: 50%;
+    width: 11%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.4);
 }
+.tractor-card.zigzag-right::after {
+    content: '';
+    position: absolute;
+    left: -11%;
+    top: 50%;
+    width: 11%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 768px) {
+    .tractor-card.zigzag-left,
+    .tractor-card.zigzag-right {
+        width: 100%;
+        align-self: center;
+    }
+    .tractor-zigzag::before,
+    .tractor-card.zigzag-left::after,
+    .tractor-card.zigzag-right::after {
+        display: none;
+    }
+}
+
 
 
 
