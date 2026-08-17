@@ -1,5 +1,60 @@
 // --- Supabase Configuration ---
 const SUPABASE_URL = 'https://sbyookvpqghxvyupakjj.supabase.co';
+
+// --- Global Settings (Theme & Language) ---
+function initGlobalSettings() {
+    // 1. Theme Toggle
+    const themeBtn = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('modelAutoTheme');
+    
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        if (themeBtn) themeBtn.innerHTML = '☀️ Light Mode';
+    }
+    
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('modelAutoTheme', 'dark');
+                themeBtn.innerHTML = '☀️ Light Mode';
+            } else {
+                localStorage.setItem('modelAutoTheme', 'light');
+                themeBtn.innerHTML = '🌙 Dark Mode';
+            }
+        });
+    }
+
+    // 2. Custom Language Dropdown to Google Translate
+    const langSelect = document.getElementById('language-dropdown');
+    const savedLang = localStorage.getItem('modelAutoLang') || 'en';
+    
+    if (langSelect) {
+        langSelect.value = savedLang;
+        // Trigger translation when user changes custom dropdown
+        langSelect.addEventListener('change', (e) => {
+            const langCode = e.target.value;
+            localStorage.setItem('modelAutoLang', langCode);
+            changeGoogleTranslateLanguage(langCode);
+        });
+    }
+    
+    // Automatically apply saved language on load (wait for GT widget to load)
+    if (savedLang !== 'en') {
+        setTimeout(() => changeGoogleTranslateLanguage(savedLang), 1500);
+    }
+}
+
+function changeGoogleTranslateLanguage(langCode) {
+    const googleSelect = document.querySelector('.goog-te-combo');
+    if (googleSelect) {
+        googleSelect.value = langCode;
+        googleSelect.dispatchEvent(new Event('change'));
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initGlobalSettings);
+
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNieW9va3ZwcWdoeHZ5dXBha2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxODEwNTIsImV4cCI6MjEwMTc1NzA1Mn0.lmRJT7bhHT5B5M9XrJLQYziNcfFt2-wsgo7tYyP89Zg';
 
 // Initialize Supabase Client — use 'db' to avoid shadowing the global 'supabase'
