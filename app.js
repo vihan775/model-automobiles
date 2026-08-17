@@ -602,12 +602,13 @@ if (document.getElementById('spare-order-form')) {
     document.getElementById('spare-order-form').addEventListener('submit', async function(e) {
         e.preventDefault();
         var amount = document.getElementById('spare-order-amount').value;
-        await db.from('spare_orders').insert([{
+        var { error } = await db.from('spare_orders').insert([{
             amount_ordered: amount,
             created_by_id: currentUser.id,
             created_by_name: currentUser.name,
             timestamp: formatDateDDMMYYYY(new Date())
         }]);
+        if (error) { alert("Error logging order: " + error.message); return; }
         e.target.reset();
         await renderSpareInchargeDashboard();
     });
@@ -616,12 +617,13 @@ if (document.getElementById('spare-order-form')) {
         e.preventDefault();
         var amount = document.getElementById('spare-cs-amount').value;
         var date = document.getElementById('spare-cs-date').value;
-        await db.from('spare_countersales').insert([{
+        var { error } = await db.from('spare_countersales').insert([{
             amount: amount,
             sale_date: date,
             created_by_id: currentUser.id,
             created_by_name: currentUser.name
         }]);
+        if (error) { alert("Error saving sale: " + error.message); return; }
         e.target.reset();
         await renderSpareInchargeDashboard();
     });
@@ -632,7 +634,7 @@ if (document.getElementById('spare-order-form')) {
         var sent = parseFloat(document.getElementById('spare-transfer-sent').value);
         var billed = parseFloat(document.getElementById('spare-transfer-billed').value);
         var difference = billed - sent;
-        await db.from('spare_branch_transfers').insert([{
+        var { error } = await db.from('spare_branch_transfers').insert([{
             branch_name: branch,
             amount_sent: sent,
             month_bill_amount: billed,
@@ -640,6 +642,7 @@ if (document.getElementById('spare-order-form')) {
             created_by_id: currentUser.id,
             created_by_name: currentUser.name
         }]);
+        if (error) { alert("Error recording transfer: " + error.message); return; }
         e.target.reset();
         await renderSpareInchargeDashboard();
     });
