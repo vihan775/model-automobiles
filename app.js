@@ -48,6 +48,40 @@ document.querySelectorAll('.hamburger-btn').forEach(btn => btn.addEventListener(
 document.getElementById('close-sidebar').addEventListener('click', () => toggleSidebar(false));
 sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
+function switchOwnerTab(tabId) {
+    const tabs = [
+        'owner-manage-employees-tab',
+        'owner-finance-records-tab',
+        'owner-salesman-data-tab',
+        'owner-spare-logs-tab',
+        'owner-master-accounts-tab'
+    ];
+    tabs.forEach(t => {
+        const el = document.getElementById(t);
+        if (el) el.style.display = 'none';
+    });
+    const selected = document.getElementById(tabId);
+    if (selected) selected.style.display = 'block';
+    toggleSidebar(false);
+}
+
+function populateSidebar() {
+    var container = document.querySelector('.sidebar-links');
+    if (!currentUser || !container) return;
+    
+    if (currentUser.role === 'Owner') {
+        container.innerHTML = `
+            <a href="#" class="sidebar-item" onclick="switchOwnerTab('owner-manage-employees-tab')">👥 Manage Employees</a>
+            <a href="#" class="sidebar-item" onclick="switchOwnerTab('owner-finance-records-tab')">💰 Finance Records</a>
+            <a href="#" class="sidebar-item" onclick="switchOwnerTab('owner-salesman-data-tab')">📈 Salesman Data</a>
+            <a href="#" class="sidebar-item" onclick="switchOwnerTab('owner-spare-logs-tab')">🛠️ Spare Incharge Logs</a>
+            <a href="#" class="sidebar-item" onclick="switchOwnerTab('owner-master-accounts-tab')">🏦 Master Accounts</a>
+        `;
+    } else {
+        container.innerHTML = `<a href="#" class="sidebar-item">📊 My Activities</a>`;
+    }
+}
+
 // --- Screen Switching & Data Fetching ---
 async function switchScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -71,6 +105,22 @@ function initLogin() {
     pwdField.setAttribute('type', 'password');
     var eyeIcon = document.getElementById('toggle-password');
     if (eyeIcon) eyeIcon.textContent = '\u{1F441}\uFE0F';
+    
+    var rememberCheckbox = document.getElementById('login-remember');
+    if (rememberCheckbox) rememberCheckbox.checked = false;
+
+    var savedId = localStorage.getItem('modelAutoUser');
+    var savedPass = localStorage.getItem('modelAutoPass');
+    if (savedId && savedPass) {
+        document.getElementById('login-username').value = savedId;
+        document.getElementById('login-password').value = savedPass;
+        if (rememberCheckbox) rememberCheckbox.checked = true;
+        
+        setTimeout(() => {
+            var btn = document.getElementById('login-form').querySelector('button');
+            if(btn && !btn.disabled) btn.click();
+        }, 100);
+    }
 }
 
 // Eye toggle for password visibility
@@ -95,6 +145,9 @@ document.getElementById('login-form').addEventListener('submit', async function(
     e.preventDefault();
     var inputId = document.getElementById('login-username').value.trim();
     var inputPass = document.getElementById('login-password').value;
+    var rememberCheckbox = document.getElementById('login-remember');
+    var remember = rememberCheckbox ? rememberCheckbox.checked : false;
+    
     var btn = document.getElementById('login-form').querySelector('button');
     btn.textContent = 'Logging In...';
     btn.disabled = true;
@@ -130,7 +183,20 @@ document.getElementById('login-form').addEventListener('submit', async function(
         
         currentUser = matchedUser;
         
-        if (currentUser.role === 'Owner') switchScreen('owner-dashboard');
+        if (remember) {
+            localStorage.setItem('modelAutoUser', inputId);
+            localStorage.setItem('modelAutoPass', inputPass);
+        } else {
+            localStorage.removeItem('modelAutoUser');
+            localStorage.removeItem('modelAutoPass');
+        }
+        
+        populateSidebar();
+        
+        if (currentUser.role === 'Owner') {
+            switchScreen('owner-dashboard');
+            switchOwnerTab('owner-manage-employees-tab');
+        }
         else if (currentUser.role === 'Manager') switchScreen('manager-dashboard');
         else if (currentUser.role === 'Telecaller') switchScreen('telecaller-dashboard');
         else if (currentUser.role === 'Salesman') switchScreen('salesman-dashboard');
@@ -146,6 +212,8 @@ document.getElementById('login-form').addEventListener('submit', async function(
 
 function logout() {
     currentUser = null;
+    localStorage.removeItem('modelAutoUser');
+    localStorage.removeItem('modelAutoPass');
     switchScreen('role-selection');
     initLogin();
 }
@@ -686,4 +754,4 @@ async function renderSpareInchargeDashboard() {
 
 // Init
 initLogin();
-// Force Vercel deployment (v10)
+// Force Vercel deployment (v12)
