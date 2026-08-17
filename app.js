@@ -223,8 +223,9 @@ async function renderOwnerDashboard() {
         }
         for (var i = 0; i < sTransfers.length; i++) {
             var t = sTransfers[i];
+            var bName = t.branch_name || 'Unknown';
             var diffColor = t.difference < 0 ? 'var(--primary-red)' : 'green';
-            spareHtml += '<tr><td>Branch Transfer</td><td>' + t.created_by_name + '</td><td>Parts Sent: \u20B9' + t.amount_sent + ' | Bill: \u20B9' + t.month_bill_amount + ' | <strong style="color: ' + diffColor + '">Diff: \u20B9' + t.difference + '</strong></td><td>' + new Date(t.created_at).toLocaleString() + '</td></tr>';
+            spareHtml += '<tr><td>Branch Transfer (' + bName + ')</td><td>' + t.created_by_name + '</td><td>Parts Sent: \u20B9' + t.amount_sent + ' | Bill: \u20B9' + t.month_bill_amount + ' | <strong style="color: ' + diffColor + '">Diff: \u20B9' + t.difference + '</strong></td><td>' + new Date(t.created_at).toLocaleString() + '</td></tr>';
         }
         sBody.innerHTML = spareHtml;
     }
@@ -604,10 +605,12 @@ if (document.getElementById('spare-order-form')) {
 
     document.getElementById('spare-transfer-form').addEventListener('submit', async function(e) {
         e.preventDefault();
+        var branch = document.getElementById('spare-transfer-branch').value;
         var sent = parseFloat(document.getElementById('spare-transfer-sent').value);
         var billed = parseFloat(document.getElementById('spare-transfer-billed').value);
         var difference = billed - sent;
         await db.from('spare_branch_transfers').insert([{
+            branch_name: branch,
             amount_sent: sent,
             month_bill_amount: billed,
             difference: difference,
@@ -639,7 +642,8 @@ async function renderSpareInchargeDashboard() {
     }
     for (var i = 0; i < transfers.length; i++) {
         var diffColor = transfers[i].difference < 0 ? 'var(--primary-red)' : 'green';
-        var details = 'Sent: \u20B9' + transfers[i].amount_sent + ' | Billed: \u20B9' + transfers[i].month_bill_amount + ' | <strong style="color: ' + diffColor + '">Diff: \u20B9' + transfers[i].difference + '</strong>';
+        var bName = transfers[i].branch_name || 'Unknown';
+        var details = 'Branch: ' + bName + ' | Sent: \u20B9' + transfers[i].amount_sent + ' | Billed: \u20B9' + transfers[i].month_bill_amount + ' | <strong style="color: ' + diffColor + '">Diff: \u20B9' + transfers[i].difference + '</strong>';
         allLogs.push({ type: 'Branch Transfer', details: details, date: new Date(transfers[i].created_at) });
     }
     
@@ -655,4 +659,4 @@ async function renderSpareInchargeDashboard() {
 
 // Init
 initLogin();
-// Force Vercel deployment (v7)
+// Force Vercel deployment (v9)
