@@ -104,7 +104,14 @@
                 </div>
                 <button class="btn-logout" onclick="logout()">Log Out</button>
             </nav>
-            <div class="content" id="owner-manage-employees-tab">
+            <div class="content owner-tab-content" id="owner-home-tab">
+                <h2>Swaraj Tractor Showroom</h2>
+                <div class="tractor-grid" id="tractor-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <div class="content owner-tab-content" id="owner-manage-employees-tab" style="display: none;">
                 <h2>Manage Employees</h2>
                 <form id="manage-users-form">
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -608,6 +615,23 @@
                     <button type="button" id="cancel-user-edit-btn" class="btn secondary-btn" style="flex:1;">Cancel</button>
                 </div>
             </form>
+        </div>
+    </div>
+    </div>
+
+    <!-- Tractor Details Modal -->
+    <div id="tractor-modal" class="sidebar-overlay" style="display: flex; align-items: center; justify-content: center; z-index: 2000;">
+        <div class="modal-content" style="background: var(--card-bg); padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); position: relative;">
+            <button class="close-modal-btn" onclick="closeTractorModal()" style="position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-dark);">×</button>
+            <h2 id="modal-tractor-name" class="modal-title" style="color: var(--primary-red); margin-bottom: 20px;">Tractor Name</h2>
+            <div class="tractor-specs" style="text-align: left; font-size: 0.95rem;">
+                <div class="spec-row" style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);"><strong>HP Category:</strong> <span id="modal-hp" style="float: right;"></span></div>
+                <div class="spec-row" style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);"><strong>Engine Capacity:</strong> <span id="modal-cc" style="float: right;"></span></div>
+                <div class="spec-row" style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);"><strong>Cylinders:</strong> <span id="modal-cylinders" style="float: right;"></span></div>
+                <div class="spec-row" style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);"><strong>Engine Rated RPM:</strong> <span id="modal-rpm" style="float: right;"></span></div>
+                <div class="spec-row" style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);"><strong>Lifting Capacity:</strong> <span id="modal-lifting" style="float: right;"></span></div>
+                <div class="spec-row"><strong>Weight:</strong> <span id="modal-weight" style="float: right;"></span></div>
+            </div>
         </div>
     </div>
 
