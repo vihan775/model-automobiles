@@ -435,10 +435,30 @@ body {
 
 /* Tractor Showroom Background */
 body.showroom-active {
-    background-image: url('images/farm_bg.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background: none;
+    background-color: #2E5C1A;
+}
+
+#scrolling-farm-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+    display: none;
+    flex-direction: column;
+}
+
+body.showroom-active #scrolling-farm-bg {
+    display: flex;
+}
+
+#scrolling-farm-bg img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0;
+    padding: 0;
 }
 .showroom-container {
     padding: 40px;
