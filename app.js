@@ -293,14 +293,21 @@ document.getElementById('manage-users-form').addEventListener('submit', async fu
 });
 
 const tractorModels = [
-    { name: "SWARAJ 733 FE 4WD", hp: "35 HP", cc: "2734 cc", cyl: "3", rpm: "2400 REV/MIN.", lift: "1300 kg", weight: "1340 kg", img: "images/tractors/tractor1.png" },
-    { name: "SWARAJ 843 XT 4WD", hp: "45 HP", cc: "2730 cc", cyl: "4", rpm: "2100 RPM", lift: "1700 kgf", weight: "2260 kg", img: "images/tractors/tractor2.png" },
-    { name: "SWARAJ 735 XT 4WD", hp: "45 HP", cc: "3307 cc", cyl: "3", rpm: "2000 RPM", lift: "1500 kgf", weight: "1905 kg", img: "images/tractors/tractor3.png" },
-    { name: "SWARAJ 744 FE 4WD", hp: "50 HP", cc: "3307 cc", cyl: "3", rpm: "2000 RPM", lift: "1700 kgf", weight: "2060 kg", img: "images/tractors/tractor4.png" },
-    { name: "SWARAJ 744 XT 4WD", hp: "52 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "1700 kgf", weight: "2345 kg", img: "images/tractors/tractor5.png" },
-    { name: "SWARAJ 843 XM 4WD", hp: "45 HP", cc: "3307 cc", cyl: "4", rpm: "1900 REV/Min.", lift: "1500 kg", weight: "2286 kg", img: "images/tractors/tractor1.png" },
-    { name: "SWARAJ 855 FE 4WD", hp: "55 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "2000 kgf", weight: "2455 kg", img: "images/tractors/tractor2.png" },
-    { name: "SWARAJ 742 XT 4WD", hp: "45 HP", cc: "3307 cc", cyl: "3", rpm: "2000 REV/Min.", lift: "1700 kgf", weight: "2053 kg", img: "images/tractors/tractor3.png" }
+    { name: "SWARAJ 733 FE", hp: "35 HP", cc: "2734 cc", cyl: "3", rpm: "2000 RPM", lift: "1300 kgf", weight: "1735 kg", img: "images/tractors/tractor1.png" },
+    { name: "SWARAJ 735 FEe", hp: "35 HP", cc: "2734 cc", cyl: "3", rpm: "2000 RPM", lift: "1000 kgf", weight: "1730 kg", img: "images/tractors/tractor2.png" },
+    { name: "SWARAJ 735 FE", hp: "40 HP", cc: "2734 cc", cyl: "3", rpm: "1800 RPM", lift: "1000 kgf", weight: "1895 kg", img: "images/tractors/tractor3.png" },
+    { name: "SWARAJ 735 XT", hp: "40 HP", cc: "2734 cc", cyl: "3", rpm: "2000 RPM", lift: "1200 kgf", weight: "1930 kg", img: "images/tractors/tractor4.png" },
+    { name: "SWARAJ 742 XT", hp: "45 HP", cc: "3136 cc", cyl: "3", rpm: "2000 RPM", lift: "1700 kgf", weight: "2020 kg", img: "images/tractors/tractor5.png" },
+    { name: "SWARAJ 834 FE", hp: "35 HP", cc: "2592 cc", cyl: "3", rpm: "2000 RPM", lift: "1000 kgf", weight: "1845 kg", img: "images/tractors/tractor6.png" },
+    { name: "SWARAJ 855 FE", hp: "55 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "1500 kgf", weight: "2020 kg", img: "images/tractors/tractor7.png" },
+    { name: "SWARAJ 843 XT", hp: "45 HP", cc: "2730 cc", cyl: "4", rpm: "2100 RPM", lift: "1200 kgf", weight: "1980 kg", img: "images/tractors/tractor8.png" },
+    { name: "SWARAJ 843 XM", hp: "45 HP", cc: "2730 cc", cyl: "4", rpm: "1900 RPM", lift: "1200 kgf", weight: "1930 kg", img: "images/tractors/tractor9.png" },
+    { name: "SWARAJ 855 FE 4WD", hp: "55 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "1500 kgf", weight: "2440 kg", img: "images/tractors/tractor10.png" },
+    { name: "SWARAJ 744 FE 4WD", hp: "50 HP", cc: "3136 cc", cyl: "3", rpm: "2000 RPM", lift: "1500 kgf", weight: "2345 kg", img: "images/tractors/tractor11.png" },
+    { name: "SWARAJ 744 XT", hp: "50 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "1700 kgf", weight: "2070 kg", img: "images/tractors/tractor12.png" },
+    { name: "SWARAJ 969 FE", hp: "65 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "2200 kgf", weight: "2690 kg", img: "images/tractors/tractor13.png" },
+    { name: "SWARAJ 963 FE", hp: "60 HP", cc: "3478 cc", cyl: "3", rpm: "2000 RPM", lift: "2200 kgf", weight: "2670 kg", img: "images/tractors/tractor14.png" },
+    { name: "SWARAJ 744 FE", hp: "48 HP", cc: "3136 cc", cyl: "3", rpm: "2000 RPM", lift: "1500 kgf", weight: "1990 kg", img: "images/tractors/tractor15.png" }
 ];
 
 function renderTractors() {
