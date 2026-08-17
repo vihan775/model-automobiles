@@ -37,6 +37,7 @@ async function switchScreen(screenId) {
     if (screenId === 'salesman-dashboard') await renderSalesmanDashboard();
     if (screenId === 'serviceman-dashboard') await renderServicemanDashboard();
     if (screenId === 'finance-dashboard') await renderFinanceDashboard();
+    if (screenId === 'spare-incharge-dashboard') await renderSpareInchargeDashboard();
 }
 
 // --- Login Logic ---
@@ -113,6 +114,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
         else if (currentUser.role === 'Salesman') switchScreen('salesman-dashboard');
         else if (currentUser.role === 'Serviceman') switchScreen('serviceman-dashboard');
         else if (currentUser.role === 'Finance') switchScreen('finance-dashboard');
+        else if (currentUser.role === 'Spare Incharge') switchScreen('spare-incharge-dashboard');
     } catch (err) {
         document.getElementById('login-error').style.display = 'block';
         btn.textContent = 'Log In';
@@ -198,6 +200,34 @@ async function renderOwnerDashboard() {
         masterHtml += '</td></tr>';
     }
     mBody.innerHTML = masterHtml;
+
+    var sBody = document.getElementById('owner-spares-body');
+    if (sBody) {
+        var spareResults = await Promise.all([
+            db.from('spare_orders').select('*').order('created_at', { ascending: false }),
+            db.from('spare_countersales').select('*').order('created_at', { ascending: false }),
+            db.from('spare_branch_transfers').select('*').order('created_at', { ascending: false })
+        ]);
+        var sOrders = spareResults[0].data || [];
+        var sCountersales = spareResults[1].data || [];
+        var sTransfers = spareResults[2].data || [];
+
+        var spareHtml = '';
+        for (var i = 0; i < sOrders.length; i++) {
+            var o = sOrders[i];
+            spareHtml += '<tr><td>Order</td><td>' + o.created_by_name + '</td><td>Amount: \u20B9' + o.amount_ordered + '</td><td>' + o.timestamp + '</td></tr>';
+        }
+        for (var i = 0; i < sCountersales.length; i++) {
+            var c = sCountersales[i];
+            spareHtml += '<tr><td>Countersale</td><td>' + c.created_by_name + '</td><td>Amount: \u20B9' + c.amount + ' (Sale Date: ' + c.sale_date + ')</td><td>' + new Date(c.created_at).toLocaleString() + '</td></tr>';
+        }
+        for (var i = 0; i < sTransfers.length; i++) {
+            var t = sTransfers[i];
+            var diffColor = t.difference < 0 ? 'var(--primary-red)' : 'green';
+            spareHtml += '<tr><td>Branch Transfer</td><td>' + t.created_by_name + '</td><td>Parts Sent: \u20B9' + t.amount_sent + ' | Bill: \u20B9' + t.month_bill_amount + ' | <strong style="color: ' + diffColor + '">Diff: \u20B9' + t.difference + '</strong></td><td>' + new Date(t.created_at).toLocaleString() + '</td></tr>';
+        }
+        sBody.innerHTML = spareHtml;
+    }
 }
 
 async function deleteUser(id) {
@@ -542,6 +572,86 @@ document.getElementById('cancel-finance-edit-btn').addEventListener('click', fun
     modal.style.display = 'none';
     modal.classList.remove('active');
 });
+
+// --- Spare Incharge Logic ---
+if (document.getElementById('spare-order-form')) {
+    document.getElementById('spare-order-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var amount = document.getElementById('spare-order-amount').value;
+        await db.from('spare_orders').insert([{
+            amount_ordered: amount,
+            created_by_id: currentUser.id,
+            created_by_name: currentUser.name,
+            timestamp: new Date().toLocaleString()
+        }]);
+        e.target.reset();
+        await renderSpareInchargeDashboard();
+    });
+
+    document.getElementById('spare-countersale-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var amount = document.getElementById('spare-cs-amount').value;
+        var date = document.getElementById('spare-cs-date').value;
+        await db.from('spare_countersales').insert([{
+            amount: amount,
+            sale_date: date,
+            created_by_id: currentUser.id,
+            created_by_name: currentUser.name
+        }]);
+        e.target.reset();
+        await renderSpareInchargeDashboard();
+    });
+
+    document.getElementById('spare-transfer-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var sent = parseFloat(document.getElementById('spare-transfer-sent').value);
+        var billed = parseFloat(document.getElementById('spare-transfer-billed').value);
+        var difference = billed - sent;
+        await db.from('spare_branch_transfers').insert([{
+            amount_sent: sent,
+            month_bill_amount: billed,
+            difference: difference,
+            created_by_id: currentUser.id,
+            created_by_name: currentUser.name
+        }]);
+        e.target.reset();
+        await renderSpareInchargeDashboard();
+    });
+}
+
+async function renderSpareInchargeDashboard() {
+    var results = await Promise.all([
+        db.from('spare_orders').select('*').eq('created_by_id', currentUser.id),
+        db.from('spare_countersales').select('*').eq('created_by_id', currentUser.id),
+        db.from('spare_branch_transfers').select('*').eq('created_by_id', currentUser.id)
+    ]);
+    
+    var orders = results[0].data || [];
+    var countersales = results[1].data || [];
+    var transfers = results[2].data || [];
+    
+    var allLogs = [];
+    for (var i = 0; i < orders.length; i++) {
+        allLogs.push({ type: 'Order', details: 'Amount: \u20B9' + orders[i].amount_ordered, date: new Date(orders[i].created_at) });
+    }
+    for (var i = 0; i < countersales.length; i++) {
+        allLogs.push({ type: 'Countersale', details: 'Amount: \u20B9' + countersales[i].amount + ' (Sale Date: ' + countersales[i].sale_date + ')', date: new Date(countersales[i].created_at) });
+    }
+    for (var i = 0; i < transfers.length; i++) {
+        var diffColor = transfers[i].difference < 0 ? 'var(--primary-red)' : 'green';
+        var details = 'Sent: \u20B9' + transfers[i].amount_sent + ' | Billed: \u20B9' + transfers[i].month_bill_amount + ' | <strong style="color: ' + diffColor + '">Diff: \u20B9' + transfers[i].difference + '</strong>';
+        allLogs.push({ type: 'Branch Transfer', details: details, date: new Date(transfers[i].created_at) });
+    }
+    
+    allLogs.sort(function(a, b) { return b.date - a.date; });
+    
+    var html = '';
+    for (var i = 0; i < allLogs.length; i++) {
+        html += '<tr><td>' + allLogs[i].type + '</td><td>' + allLogs[i].details + '</td><td>' + allLogs[i].date.toLocaleString() + '</td></tr>';
+    }
+    
+    document.getElementById('spare-history-body').innerHTML = html;
+}
 
 // Init
 initLogin();
