@@ -434,11 +434,13 @@ body {
 }
 
 /* Tractor Showroom Background */
-.showroom-container {
+body.showroom-active {
     background-image: url('images/farm_bg.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+}
+.showroom-container {
     padding: 40px;
     border-radius: var(--border-radius);
     min-height: 100vh;
