@@ -414,7 +414,7 @@
                 <button class="btn-logout" onclick="logout()">Log Out</button>
             </nav>
             <div class="content">
-                <div class="dashboard-stats" style="grid-template-columns: 1fr; gap: 20px;">
+                <div class="dashboard-stats" style="flex-direction: column; gap: 20px;">
                     <!-- Add Order Form -->
                     <div class="stat-card" style="text-align: left;">
                         <h3 style="color: var(--primary-red); margin-bottom: 15px;">Add New Order</h3>
@@ -438,6 +438,13 @@
                     <div class="stat-card" style="text-align: left;">
                         <h3 style="color: var(--primary-red); margin-bottom: 15px;">Branch Transfer & Billing</h3>
                         <form id="spare-transfer-form" style="display: flex; flex-direction: column; gap: 15px;">
+                            <select id="spare-transfer-branch" required style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: white;">
+                                <option value="" disabled selected>Select Branch Name</option>
+                                <option value="Deori">Deori</option>
+                                <option value="Saundad">Saundad</option>
+                                <option value="Arjuni Moregaon">Arjuni Moregaon</option>
+                                <option value="Amgaon">Amgaon</option>
+                            </select>
                             <input type="number" id="spare-transfer-sent" placeholder="Amount of Parts Sent (₹)" required style="width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
                             <input type="number" id="spare-transfer-billed" placeholder="Total Month Bill (₹)" required style="width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
                             <button type="submit" class="btn primary-btn" style="padding: 12px; width: 100%;">Record Transfer</button>
@@ -564,6 +571,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=8"></script>
+    <script src="app.js?v=9"></script>
 </body>
 </html>
