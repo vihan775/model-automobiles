@@ -92,6 +92,7 @@
                             <option value="Salesman">Salesman</option>
                             <option value="Serviceman">Serviceman</option>
                             <option value="Finance">Finance</option>
+                            <option value="Spare Incharge">Spare Incharge</option>
                             <option value="Owner">Owner</option>
                         </select>
                         <button type="submit" class="btn primary-btn" style="width: 100%; margin-top: 5px;">Add User</button>
@@ -123,6 +124,21 @@
                             </tr>
                         </thead>
                         <tbody id="master-data-body"></tbody>
+                    </table>
+                </div>
+
+                <h2 style="margin-top: 40px;">Spare Parts Records</h2>
+                <div class="table-container">
+                    <table id="owner-spares-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>By</th>
+                                <th>Details</th>
+                                <th>Date/Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="owner-spares-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -388,6 +404,63 @@
             </div>
         </div>
 
+        <!-- SPARE INCHARGE DASHBOARD -->
+        <div id="spare-incharge-dashboard" class="screen">
+            <nav class="navbar">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="hamburger-btn">☰</button>
+                    <div class="nav-brand">Spare Parts Hub</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">Log Out</button>
+            </nav>
+            <div class="content">
+                <div class="dashboard-stats" style="grid-template-columns: 1fr; gap: 20px;">
+                    <!-- Add Order Form -->
+                    <div class="stat-card" style="text-align: left;">
+                        <h3 style="color: var(--primary-red); margin-bottom: 15px;">Add New Order</h3>
+                        <form id="spare-order-form" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <input type="number" id="spare-order-amount" placeholder="Amount Ordered (₹)" required style="flex: 1; min-width: 200px; padding: 10px;">
+                            <button type="submit" class="btn primary-btn" style="padding: 10px 20px;">Log Order</button>
+                        </form>
+                    </div>
+
+                    <!-- Add Countersale Form -->
+                    <div class="stat-card" style="text-align: left;">
+                        <h3 style="color: var(--primary-red); margin-bottom: 15px;">Log Countersale</h3>
+                        <form id="spare-countersale-form" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                            <input type="number" id="spare-cs-amount" placeholder="Sale Amount (₹)" required style="flex: 1; min-width: 150px; padding: 10px;">
+                            <input type="date" id="spare-cs-date" required style="flex: 1; min-width: 150px; padding: 10px;">
+                            <button type="submit" class="btn primary-btn" style="padding: 10px 20px;">Save Sale</button>
+                        </form>
+                    </div>
+
+                    <!-- Sent to Branch Form -->
+                    <div class="stat-card" style="text-align: left;">
+                        <h3 style="color: var(--primary-red); margin-bottom: 15px;">Branch Transfer & Billing</h3>
+                        <form id="spare-transfer-form" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <input type="number" id="spare-transfer-sent" placeholder="Amount of Parts Sent (₹)" required style="flex: 1; min-width: 200px; padding: 10px;">
+                            <input type="number" id="spare-transfer-billed" placeholder="Total Month Bill (₹)" required style="flex: 1; min-width: 200px; padding: 10px;">
+                            <button type="submit" class="btn primary-btn" style="padding: 10px 20px; min-width: 150px;">Record Transfer</button>
+                        </form>
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 40px;">My Recent Logs</h2>
+                <div class="table-container">
+                    <table id="spare-history-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th>Date/Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spare-history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Edit Modal (For Owner) -->
@@ -479,6 +552,7 @@
                         <option value="Salesman">Salesman</option>
                         <option value="Serviceman">Serviceman</option>
                         <option value="Finance">Finance</option>
+                        <option value="Spare Incharge">Spare Incharge</option>
                         <option value="Owner">Owner</option>
                     </select>
                 </div>
@@ -490,6 +564,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
 </body>
 </html>
