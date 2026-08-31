@@ -321,7 +321,10 @@ const tractorModels = [
     { name: "SWARAJ 717", hp: "15 HP", cc: "870 cc", cyl: "1", rpm: "2300 RPM", lift: "780 kgf", weight: "850 kg", img: "images/tractors/tractor17.png" },
     { name: "SWARAJ 825 XM", hp: "25 HP", cc: "1538 cc", cyl: "1", rpm: "1650 RPM", lift: "1000 kgf", weight: "1330 kg", img: "images/tractors/tractor18.png" },
     { name: "SWARAJ 724 XM", hp: "25 HP", cc: "1824 cc", cyl: "2", rpm: "1800 RPM", lift: "1000 kgf", weight: "1430 kg", img: "images/tractors/tractor19.png" },
-    { name: "SWARAJ 724 XM Orchard", hp: "25 HP", cc: "1824 cc", cyl: "2", rpm: "1800 RPM", lift: "1000 kgf", weight: "1430 kg", img: "images/tractors/tractor20.png" }
+    { name: "SWARAJ 724 XM Orchard", hp: "25 HP", cc: "1824 cc", cyl: "2", rpm: "1800 RPM", lift: "1000 kgf", weight: "1430 kg", img: "images/tractors/tractor20.png" },
+    { name: "SWARAJ TARGET 625 4x4", hp: "25 HP", cc: "1331 cc", cyl: "3", rpm: "2800 RPM", lift: "980 kgf", weight: "975 kg", img: "images/tractors/tractor21.png" },
+    { name: "SWARAJ TARGET 625 2WD", hp: "25 HP", cc: "1331 cc", cyl: "3", rpm: "2800 RPM", lift: "980 kgf", weight: "950 kg", img: "images/tractors/tractor22.png" },
+    { name: "SWARAJ 724 FE 4x4", hp: "25 HP", cc: "1824 cc", cyl: "2", rpm: "1800 RPM", lift: "1000 kgf", weight: "1450 kg", img: "images/tractors/tractor23.png" }
 ];
 
 function renderTractors() {
